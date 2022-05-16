@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         send.setOnClickListener(v -> {
 
-            if(!textToSend.getText().toString().isEmpty()){
+            if (!textToSend.getText().toString().isEmpty()) {
 
                 dbQueries db = new dbQueries();
 
@@ -180,7 +180,11 @@ public class MainActivity extends AppCompatActivity {
 
         handler.postDelayed(new Runnable() {
             public void run() {
-                loadChat();
+
+                if (!(connection == null)) {
+
+                    loadChat();
+                }
                 handler.postDelayed(this, delay);
             }
         }, delay);
