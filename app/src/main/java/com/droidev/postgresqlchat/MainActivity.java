@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
     public void login() {
 
         EditText user = new EditText(this);
-        user.setHint("User");
+        user.setHint("User Name");
         user.setInputType(InputType.TYPE_CLASS_TEXT);
         user.setMaxLines(1);
 
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setCancelable(false)
                 .setTitle("Login")
-                .setMessage("Insert database credentials")
+                .setMessage("Insert user name and database credentials below:")
                 .setPositiveButton("Save", null)
                 .setNegativeButton("Cancel", null)
                 .setNeutralButton("Clear all", null)
