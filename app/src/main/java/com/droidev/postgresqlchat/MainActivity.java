@@ -46,13 +46,19 @@ public class MainActivity extends AppCompatActivity {
 
         send.setOnClickListener(v -> {
 
-            dbQueries db = new dbQueries();
+            if(!textToSend.getText().toString().isEmpty()){
 
-            db.insertIntoChat(MainActivity.this, connection, tinyDB.getString("user"), textToSend.getText().toString());
+                dbQueries db = new dbQueries();
 
-            loadChat();
+                db.insertIntoChat(MainActivity.this, connection, tinyDB.getString("user"), textToSend.getText().toString());
 
-            textToSend.setText("");
+                loadChat();
+
+                textToSend.setText("");
+            } else {
+
+                Toast.makeText(this, "Message cannot be empty.", Toast.LENGTH_SHORT).show();
+            }
         });
 
         makeConnection();
