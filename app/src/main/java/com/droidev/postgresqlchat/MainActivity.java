@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
 
                 dialog.dismiss();
 
-                Toast.makeText(MainActivity.this, "Salvo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Saved.", Toast.LENGTH_SHORT).show();
 
                 new Thread(() -> {
 
