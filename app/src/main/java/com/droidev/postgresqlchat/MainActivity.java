@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void makeConnection() {
+    private void makeConnection() {
 
         new Thread(() -> {
             try {
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    public void loadChat() {
+    private void loadChat() {
 
         try {
 
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    public void login() {
+    private void login() {
 
         EditText user = new EditText(this);
         user.setHint("User Name");
