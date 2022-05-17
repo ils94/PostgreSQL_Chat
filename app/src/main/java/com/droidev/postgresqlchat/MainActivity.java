@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +44,35 @@ public class MainActivity extends AppCompatActivity {
         textToSend = findViewById(R.id.textToSend);
         send = findViewById(R.id.send);
 
+        textToSend.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (s.toString().trim().length() == 0) {
+                    send.setEnabled(false);
+                } else {
+                    send.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().length() == 0) {
+                    send.setEnabled(false);
+                } else {
+                    send.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().trim().length() == 0) {
+                    send.setEnabled(false);
+                } else {
+                    send.setEnabled(true);
+                }
+            }
+        });
+
         chat.setMovementMethod(new ScrollingMovementMethod());
 
         send.setOnClickListener(v -> {
@@ -52,23 +83,32 @@ public class MainActivity extends AppCompatActivity {
 
                 db.insertIntoChat(MainActivity.this, connection, tinyDB.getString("user"), textToSend.getText().toString());
 
+                textToSend.setText("");
+
+                chat.append(" ");
+
+                send.setEnabled(false);
+
                 loadChat();
 
-                textToSend.setText("");
             } else {
 
                 Toast.makeText(this, "Message cannot be empty.", Toast.LENGTH_SHORT).show();
             }
         });
 
+        send.setEnabled(false);
+
         makeConnection();
 
-        reloadChat();
+        loadChatHandlerLoop();
     }
 
     @Override
     public void onBackPressed() {
         if (confirm) {
+            Handler handler = new Handler();
+            handler.removeCallbacksAndMessages(null);
             finish();
         } else {
             Toast.makeText(this, "Press back again to exit app.",
@@ -89,9 +129,11 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
 
-            case R.id.truncate:
+            case R.id.scrollToBottom:
 
-                truncateDB();
+                chat.append(" ");
+
+                loadChat();
 
                 break;
         }
@@ -149,31 +191,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void truncateDB() {
-
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setCancelable(false)
-                .setTitle("Truncate DB")
-                .setMessage("This action will delete all content inside the DB!")
-                .setPositiveButton("Ok", null)
-                .setNegativeButton("Cancel", null)
-                .show();
-
-        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-
-        positiveButton.setOnClickListener(v -> {
-
-            dbQueries dbQueries = new dbQueries();
-
-            dbQueries.truncateDB(MainActivity.this, connection);
-
-            dbQueries.insertIntoChat(MainActivity.this, connection, "System", "User " + tinyDB.getString("user") + " truncated the DB.");
-
-            dialog.dismiss();
-        });
-    }
-
-    private void reloadChat() {
+    private void loadChatHandlerLoop() {
 
         final Handler handler = new Handler();
         final int delay = 3000;
@@ -183,7 +201,14 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!(connection == null)) {
 
-                    loadChat();
+                    try {
+                        if (!connection.isClosed()) {
+
+                            loadChat();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
                 handler.postDelayed(this, delay);
             }
