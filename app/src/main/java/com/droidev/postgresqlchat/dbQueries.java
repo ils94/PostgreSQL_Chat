@@ -45,17 +45,17 @@ public class dbQueries {
         return chat;
     }
 
-    public void insertIntoChat(Activity activity, Connection connection, String user, String conversation) {
+    public void insertIntoChat(Activity activity, Connection connection, String user, String message) {
         Thread thread = new Thread(() -> {
 
             try {
 
                 PreparedStatement pst;
-                String sql = "INSERT INTO CHAT (CHAT_USER, CONVERSATION) VALUES (?, ?)";
+                String sql = "INSERT INTO CHAT (USER_NAME, USER_MESSAGE) VALUES (?, ?)";
 
                 pst = connection.prepareStatement(sql);
                 pst.setString(1, user);
-                pst.setString(2, conversation);
+                pst.setString(2, message);
                 pst.executeUpdate();
 
             } catch (Exception e) {
