@@ -25,8 +25,8 @@ public class dbQueries {
 
                 while (rs.next()) {
 
-                    String user = rs.getString("CHAT_USER");
-                    String conversation = rs.getString("CONVERSATION");
+                    String user = rs.getString("USER_NAME");
+                    String conversation = rs.getString("USER_MESSAGE");
 
                     chat.append(user).append(": ").append(conversation).append("\n");
                 }
