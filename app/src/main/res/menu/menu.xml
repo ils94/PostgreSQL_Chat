@@ -7,6 +7,10 @@
         android:title="Login" />
 
     <item
+        android:id="@+id/changeTextSize"
+        android:title="Change Text Size" />
+
+    <item
         android:id="@+id/scrollToBottom"
         android:title="Scroll to Bottom" />
 </menu>

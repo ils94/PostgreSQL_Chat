@@ -10,8 +10,10 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -61,31 +63,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        chat.setMovementMethod(new ScrollingMovementMethod());
+        textToSend.setOnEditorActionListener((v, actionId, event) -> {
 
-        send.setOnClickListener(v -> {
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
 
-            if (!textToSend.getText().toString().isEmpty()) {
+                sendText();
 
-                dbQueries db = new dbQueries();
-
-                db.insertIntoChat(MainActivity.this, connection, tinyDB.getString("user"), textToSend.getText().toString());
-
-                textToSend.setText("");
-
-                chat.append(" ");
-
-                send.setEnabled(false);
-
-                loadChat();
-
-            } else {
-
-                Toast.makeText(this, "Message cannot be empty.", Toast.LENGTH_SHORT).show();
+                return true;
             }
+
+            return false;
         });
 
+        chat.setMovementMethod(new ScrollingMovementMethod());
+
+        send.setOnClickListener(v -> sendText());
+
         send.setEnabled(false);
+
+        if (!tinyDB.getString("textSize").isEmpty()) {
+
+            chat.setTextSize(TypedValue.COMPLEX_UNIT_SP, Integer.parseInt(tinyDB.getString("textSize")));
+        }
 
         makeConnection();
 
@@ -114,6 +113,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.login:
 
                 login();
+
+                break;
+
+            case R.id.changeTextSize:
+
+                changeTextSize();
 
                 break;
 
@@ -210,6 +215,73 @@ public class MainActivity extends AppCompatActivity {
         }, delay);
     }
 
+    private void sendText() {
+
+        if (!textToSend.getText().toString().isEmpty()) {
+
+            dbQueries db = new dbQueries();
+
+            db.insertIntoChat(MainActivity.this, connection, tinyDB.getString("user"), textToSend.getText().toString());
+
+            textToSend.setText("");
+
+            chat.append(" ");
+
+            send.setEnabled(false);
+
+            loadChat();
+
+        } else {
+
+            Toast.makeText(this, "Message cannot be empty.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void changeTextSize() {
+
+        float scaledDensity = MainActivity.this.getResources().getDisplayMetrics().scaledDensity;
+        float sp = chat.getTextSize() / scaledDensity;
+
+        EditText textSize = new EditText(this);
+        textSize.setHint("Current size is: " + sp);
+        textSize.setInputType(InputType.TYPE_CLASS_NUMBER);
+        textSize.setMaxLines(1);
+
+        LinearLayout lay = new LinearLayout(this);
+        lay.setOrientation(LinearLayout.VERTICAL);
+        lay.addView(textSize);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle("Adjust Text Size")
+                .setMessage("Insert the desired size below:")
+                .setPositiveButton("Save", null)
+                .setNegativeButton("Cancel", null)
+                .setView(lay)
+                .show();
+
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        positiveButton.setOnClickListener(v -> {
+
+            try {
+
+                chat.setTextSize(TypedValue.COMPLEX_UNIT_SP, Float.parseFloat(textSize.getText().toString()));
+
+                TinyDB tinyDB = new TinyDB(MainActivity.this);
+
+                tinyDB.remove("textSize");
+                tinyDB.putString("textSize", textSize.getText().toString());
+
+                dialog.dismiss();
+
+            } catch (Exception e) {
+
+                Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @SuppressLint("SetTextI18n")
     private void login() {
 
@@ -285,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
 
             } else if (user.getText().toString().length() > 10) {
 
-                Toast.makeText(MainActivity.this, "User name cannot be bigger than 5 characters.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "User name cannot be bigger than 10 characters.", Toast.LENGTH_SHORT).show();
             } else {
 
                 tinyDB.remove("user");
