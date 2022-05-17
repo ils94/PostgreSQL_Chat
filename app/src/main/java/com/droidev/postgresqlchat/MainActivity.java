@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView chat;
     private EditText textToSend;
     private Button send;
-    private Boolean confirm = false;
+    private Boolean confirm = false, firstLoad = false;
 
     private TinyDB tinyDB;
 
@@ -47,29 +47,17 @@ public class MainActivity extends AppCompatActivity {
         textToSend.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if (s.toString().trim().length() == 0) {
-                    send.setEnabled(false);
-                } else {
-                    send.setEnabled(true);
-                }
+                send.setEnabled(s.toString().trim().length() != 0);
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().length() == 0) {
-                    send.setEnabled(false);
-                } else {
-                    send.setEnabled(true);
-                }
+                send.setEnabled(s.toString().trim().length() != 0);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.toString().trim().length() == 0) {
-                    send.setEnabled(false);
-                } else {
-                    send.setEnabled(true);
-                }
+                send.setEnabled(s.toString().trim().length() != 0);
             }
         });
 
@@ -184,6 +172,13 @@ public class MainActivity extends AppCompatActivity {
                 StringBuilder dbLoad = db.loadChat(MainActivity.this, connection);
 
                 chat.setText(dbLoad);
+
+                if (!firstLoad) {
+
+                    chat.append(" ");
+
+                    firstLoad = true;
+                }
             }
         } catch (Exception e) {
 
