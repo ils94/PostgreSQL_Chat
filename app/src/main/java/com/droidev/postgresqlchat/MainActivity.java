@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText textToSend;
     private Button send;
     private Boolean confirm = false, autoScroll = true;
+    Menu menuItem;
 
     private TinyDB tinyDB;
 
@@ -58,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
         chat = findViewById(R.id.chat);
         textToSend = findViewById(R.id.textToSend);
         send = findViewById(R.id.send);
-
-        chat.setOnClickListener(v -> autoScroll = false);
 
         textToSend.addTextChangedListener(new TextWatcher() {
             @Override
@@ -125,9 +124,9 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
 
-            case R.id.enableAutoScroll:
+            case R.id.pauseResumeChatLoop:
 
-                autoScroll = true;
+                pauseResumeChatLoop();
 
                 break;
 
@@ -165,16 +164,6 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
 
-            case R.id.scrollToBottom:
-
-                chat.append(" ");
-
-                loadChat();
-
-                autoScroll = true;
-
-                break;
-
             case R.id.showAllMessages:
 
                 showAllMessages();
@@ -186,6 +175,9 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+
+        menuItem = menu;
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -251,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!(connection == null)) {
 
                     try {
-                        if (!connection.isClosed()) {
+                        if (!connection.isClosed() && autoScroll) {
 
                             loadChat();
                         }
@@ -273,6 +265,8 @@ public class MainActivity extends AppCompatActivity {
             db.insertIntoChat(MainActivity.this, connection, tinyDB.getString("user"), textToSend.getText().toString());
 
             textToSend.setText("");
+
+            resumeChatLoop();
 
             chat.append(" ");
 
@@ -559,5 +553,37 @@ public class MainActivity extends AppCompatActivity {
 
             dialog.dismiss();
         });
+    }
+
+    private void pauseResumeChatLoop() {
+
+        if (autoScroll) {
+
+            Toast.makeText(MainActivity.this, "Chat loop paused.", Toast.LENGTH_SHORT).show();
+
+            autoScroll = false;
+
+            menuItem.findItem(R.id.pauseResumeChatLoop).setIcon(R.drawable.play);
+        } else {
+
+            Toast.makeText(MainActivity.this, "Chat loop resumed.", Toast.LENGTH_SHORT).show();
+
+            autoScroll = true;
+
+            menuItem.findItem(R.id.pauseResumeChatLoop).setIcon(R.drawable.pause);
+        }
+    }
+
+    private void resumeChatLoop() {
+
+        if (!autoScroll) {
+
+            Toast.makeText(MainActivity.this, "Chat loop resumed.", Toast.LENGTH_SHORT).show();
+
+            autoScroll = true;
+
+            menuItem.findItem(R.id.pauseResumeChatLoop).setIcon(R.drawable.pause);
+        }
+
     }
 }

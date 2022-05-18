@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/enableAutoScroll"
-        android:icon="@drawable/scroll"
-        android:title="Enable Auto Scroll"
+        android:id="@+id/pauseResumeChatLoop"
+        android:icon="@drawable/pause"
+        android:title="Pause/Resume Auto Scroll"
         app:showAsAction="always" />
 
     <item
@@ -19,10 +19,6 @@
     <item
         android:id="@+id/changeTextSize"
         android:title="Change Text Size" />
-
-    <item
-        android:id="@+id/scrollToBottom"
-        android:title="Scroll to Bottom" />
 
     <item
         android:id="@+id/showAllMessages"

@@ -15,6 +15,7 @@
         android:layout_weight="1"
         android:autoLink="all"
         android:gravity="bottom|start"
-        android:padding="5dp" />
+        android:padding="5dp"
+        android:textIsSelectable="true" />
 
 </LinearLayout>
