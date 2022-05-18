@@ -286,30 +286,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showAllMessages() {
-
-        try {
-
-            if (connection.isClosed() || connection == null) {
-
-                makeConnection();
-
-            } else {
-
-                dbQueries db = new dbQueries();
-
-                StringBuilder dbLoad = db.loadChat(MainActivity.this, connection, "SELECT * FROM CHAT ORDER BY ID ASC");
-
-                Intent intent = new Intent(this, ShowAllMessagesActivity.class);
-                intent.putExtra("chat", dbLoad.toString());
-                startActivity(intent);
-            }
-        } catch (Exception e) {
-
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @SuppressLint("SetTextI18n")
     private void login() {
 
@@ -543,6 +519,45 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).start();
             }
+        });
+    }
+
+    private void showAllMessages() {
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle("Show All Messages")
+                .setMessage("You are about to load all messages from the database, proceed?")
+                .setPositiveButton("Yes", null)
+                .setNegativeButton("Cancel", null)
+                .show();
+
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        positiveButton.setOnClickListener(v -> {
+
+            try {
+
+                if (connection.isClosed() || connection == null) {
+
+                    makeConnection();
+
+                } else {
+
+                    dbQueries db = new dbQueries();
+
+                    StringBuilder dbLoad = db.loadChat(MainActivity.this, connection, "SELECT * FROM CHAT ORDER BY ID ASC");
+
+                    Intent intent = new Intent(this, ShowAllMessagesActivity.class);
+                    intent.putExtra("chat", dbLoad.toString());
+                    startActivity(intent);
+                }
+            } catch (Exception e) {
+
+                Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+            }
+
+            dialog.dismiss();
         });
     }
 }
