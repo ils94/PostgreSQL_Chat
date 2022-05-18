@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TinyDB tinyDB;
 
-    private Connection connection;
+    public static Connection connection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
         if (uri != null) {
 
             String path = uri.toString();
-
-            Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
 
             deepLink(path.replace("https://psqlchat.go/", ""));
         }
@@ -174,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.activity_main_menu, menu);
 
         menuItem = menu;
 

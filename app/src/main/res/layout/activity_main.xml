@@ -14,9 +14,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:autoLink="all"
-        android:gravity="bottom|start"
-        android:padding="5dp"
-        android:textIsSelectable="true" />
+        android:gravity="bottom"
+        android:padding="5dp" />
 
     <View
         android:layout_width="match_parent"
