@@ -3,8 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/enableAutoScroll"
+        android:icon="@drawable/scroll"
+        android:title="Enable Auto Scroll"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/login"
         android:title="Login" />
+
+    <item
+        android:id="@+id/shareLink"
+        android:title="Share DB Link" />
 
     <item
         android:id="@+id/changeTextSize"

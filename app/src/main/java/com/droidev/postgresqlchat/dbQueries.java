@@ -18,7 +18,7 @@ public class dbQueries {
             try {
 
                 Statement stmt;
-                String sql = "SELECT * FROM CHAT ORDER BY ID ASC";
+                String sql = "SELECT * FROM CHAT ORDER BY ID ASC LIMIT 1000";
 
                 stmt = connection.createStatement();
                 ResultSet rs = stmt.executeQuery(sql);
