@@ -4,7 +4,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
@@ -15,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.sql.Connection;
 
@@ -53,40 +51,35 @@ public class ShowAllMessagesActivity extends AppCompatActivity {
     @SuppressLint("NonConstantResourceId")
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
+        if (item.getItemId() == R.id.searchMessage) {
+            EditText search = new EditText(this);
+            search.setInputType(InputType.TYPE_CLASS_TEXT);
+            search.setMaxLines(1);
 
-            case R.id.searchMessage:
+            LinearLayout lay = new LinearLayout(this);
+            lay.setOrientation(LinearLayout.VERTICAL);
+            lay.addView(search);
 
-                EditText search = new EditText(this);
-                search.setInputType(InputType.TYPE_CLASS_TEXT);
-                search.setMaxLines(1);
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setCancelable(false)
+                    .setTitle("Search in the Database")
+                    .setPositiveButton("Search", null)
+                    .setNegativeButton("Cancel", null)
+                    .setView(lay)
+                    .show();
 
-                LinearLayout lay = new LinearLayout(this);
-                lay.setOrientation(LinearLayout.VERTICAL);
-                lay.addView(search);
+            Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
-                AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setCancelable(false)
-                        .setTitle("Search in the Database")
-                        .setPositiveButton("Search", null)
-                        .setNegativeButton("Cancel", null)
-                        .setView(lay)
-                        .show();
+            positiveButton.setOnClickListener(v -> {
 
-                Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                dbQueries db = new dbQueries();
 
-                positiveButton.setOnClickListener(v -> {
+                StringBuilder dbLoad = db.searchMessage(ShowAllMessagesActivity.this, connection, search.getText().toString());
 
-                    dbQueries db = new dbQueries();
+                chat.setText(dbLoad);
 
-                    StringBuilder dbLoad = db.searchMessage(ShowAllMessagesActivity.this, connection, search.getText().toString());
-
-                    chat.setText(dbLoad);
-
-                    dialog.dismiss();
-                });
-
-                break;
+                dialog.dismiss();
+            });
         }
         return super.onOptionsItemSelected(item);
     }
