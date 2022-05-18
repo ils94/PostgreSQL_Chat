@@ -12,13 +12,12 @@ public class dbQueries {
 
     StringBuilder chat = new StringBuilder();
 
-    public StringBuilder loadChat(Activity activity, Connection connection) {
+    public StringBuilder loadChat(Activity activity, Connection connection, String sql) {
         Thread thread = new Thread(() -> {
 
             try {
 
                 Statement stmt;
-                String sql = "SELECT * FROM CHAT ORDER BY ID ASC LIMIT 1000";
 
                 stmt = connection.createStatement();
                 ResultSet rs = stmt.executeQuery(sql);

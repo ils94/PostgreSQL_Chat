@@ -171,6 +171,14 @@ public class MainActivity extends AppCompatActivity {
 
                 loadChat();
 
+                autoScroll = true;
+
+                break;
+
+            case R.id.showAllMessages:
+
+                showAllMessages();
+
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -217,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
 
                 dbQueries db = new dbQueries();
 
-                StringBuilder dbLoad = db.loadChat(MainActivity.this, connection);
+                StringBuilder dbLoad = db.loadChat(MainActivity.this, connection, "SELECT * FROM CHAT ORDER BY ID ASC LIMIT 1000");
 
                 chat.setText(dbLoad);
 
@@ -275,6 +283,30 @@ public class MainActivity extends AppCompatActivity {
         } else {
 
             Toast.makeText(this, "Message cannot be empty.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showAllMessages() {
+
+        try {
+
+            if (connection.isClosed() || connection == null) {
+
+                makeConnection();
+
+            } else {
+
+                dbQueries db = new dbQueries();
+
+                StringBuilder dbLoad = db.loadChat(MainActivity.this, connection, "SELECT * FROM CHAT ORDER BY ID ASC");
+
+                Intent intent = new Intent(this, ShowAllMessagesActivity.class);
+                intent.putExtra("chat", dbLoad.toString());
+                startActivity(intent);
+            }
+        } catch (Exception e) {
+
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -412,7 +444,6 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setCancelable(false)
                 .setTitle("Adjust Text Size")
-                .setMessage("Insert the desired size below:")
                 .setPositiveButton("Save", null)
                 .setNegativeButton("Cancel", null)
                 .setView(lay)

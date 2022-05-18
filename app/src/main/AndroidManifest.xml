@@ -16,6 +16,9 @@
         android:theme="@style/Theme.PostgreSQLChat"
         tools:targetApi="31">
         <activity
+            android:name=".ShowAllMessagesActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="portrait">
@@ -24,7 +27,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -32,9 +34,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="https"
-                    android:host="psqlchat.go" />
-
+                    android:host="psqlchat.go"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
     </application>

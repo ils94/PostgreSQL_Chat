@@ -23,4 +23,8 @@
     <item
         android:id="@+id/scrollToBottom"
         android:title="Scroll to Bottom" />
+
+    <item
+        android:id="@+id/showAllMessages"
+        android:title="Show All Messages" />
 </menu>
